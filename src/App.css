@@ -1,0 +1,48 @@
+.app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.app__viewport {
+  flex: 1;
+  min-width: 0;
+}
+
+.muscle-panel {
+  width: 320px;
+  flex-shrink: 0;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: #161616;
+  color: #f0f0f0;
+  border-left: 1px solid #2a2a2a;
+  text-align: left;
+}
+
+.muscle-panel--empty {
+  display: flex;
+  align-items: center;
+  color: #888;
+}
+
+.muscle-panel h2 {
+  margin-top: 0;
+}
+
+.muscle-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.muscle-panel li {
+  padding: 0.75rem 0;
+  border-top: 1px solid #2a2a2a;
+}
+
+.muscle-panel li p {
+  margin: 0.25rem 0 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
