@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { exercises } from "../data/exercises";
 import { exercisesForMuscle } from "../data/muscleGroups";
+import { MEDIA_ATTRIBUTION, MEDIA_ATTRIBUTION_URL, clipFor } from "../data/exerciseMedia";
 import type { MuscleSelection } from "../types/anatomy";
 
 interface MusclePanelProps {
@@ -83,15 +84,33 @@ export function MusclePanel({ muscle, onClose }: MusclePanelProps) {
           {exerciseIds.map((exerciseId) => {
             const exercise = exercises[exerciseId];
             if (!exercise) return null;
+            const clip = clipFor(exercise.id);
             return (
               <li key={exercise.id}>
                 <h3 className="detail__exercise-name">{exercise.name}</h3>
+                {clip && (
+                  <figure className="detail__clip">
+                    <img src={clip.src} alt={`Animation of ${clip.depicts}`} loading="lazy" />
+                    {clip.depicts !== exercise.name.toLowerCase() && (
+                      <figcaption>Shown: {clip.depicts}</figcaption>
+                    )}
+                  </figure>
+                )}
                 <p className="detail__description">{exercise.description}</p>
                 <p className="detail__cue">{exercise.formNote}</p>
               </li>
             );
           })}
         </ul>
+      )}
+
+      {exerciseIds.some((id) => clipFor(id)) && (
+        <p className="detail__credit">
+          Exercise animations{" "}
+          <a href={MEDIA_ATTRIBUTION_URL} target="_blank" rel="noreferrer noopener">
+            {MEDIA_ATTRIBUTION}
+          </a>
+        </p>
       )}
     </aside>
   );

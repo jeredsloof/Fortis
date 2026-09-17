@@ -50,6 +50,19 @@ directly and fails if the curation and the model ever drift apart.
 The 3D scene is lazy-loaded, keeping Three.js and drei out of the entry chunk so the
 page can paint before the model arrives.
 
+## Exercise animations
+
+Animated demonstrations are shown for 69 of the 101 exercises, in
+`public/exercises/`. The clips are **© [Gym visual](https://gymvisual.com/)**,
+obtained via [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset).
+
+That repository's MIT licence covers its data and tooling but **explicitly not
+this media** — its use is governed by
+[Gym visual's terms](https://gymvisual.com/content/3-terms-and-conditions-of-use),
+and cloning does not grant a licence to it. If you fork or deploy this project,
+obtain your own licence from Gym visual or replace the clips: the media source is
+isolated to `src/data/exerciseMedia.ts`, and nothing else reads those files.
+
 ## The anatomy model
 
 `public/models/full-body-male-mobile.glb` comes from

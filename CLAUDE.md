@@ -75,6 +75,23 @@ group list. Selection itself is **controlled**: `App` owns `selectedMuscle`, and
 `BodyModel` paints whatever `selectedMuscleId` it is handed — which is what lets a
 search result and a click on the model take the same path.
 
+### Gotcha: the exercise clips are not ours to relicense
+
+`public/exercises/*.gif` (69 clips) are © Gym visual, obtained via
+`hasaneyldrm/exercises-dataset`. That repo's MIT licence covers its data and
+tooling and **explicitly excludes the media** — cloning grants no licence to it.
+Consequences for anything done here:
+
+- Keep the `© Gym visual` credit rendered wherever a clip appears; it's a licence
+  condition, not decoration.
+- Don't copy the clips into new locations or mirror them elsewhere.
+- Everything media-related is confined to `src/data/exerciseMedia.ts` and the
+  `public/exercises/` folder, so swapping to a differently-licensed source (e.g.
+  `bryllim/workout-guide`, CC BY-SA 4.0) is a change to that one file plus the
+  assets. Keep it that way.
+- The dataset's own *metadata* (names, instructions in 10 languages, muscle
+  targets) is MIT and can be used freely if we ever want it.
+
 ### Why details are split across two tiers
 
 A single centred modal carried everything and therefore covered the body you had

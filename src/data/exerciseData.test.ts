@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { exercises } from "./exercises";
 import { exercisesByGroup, exercisesByMuscle, exercisesForMuscle } from "./muscleGroups";
+import { clipFor, clipSubjects } from "./exerciseMedia";
 
 // The GLB's metadata is the source of truth for group and key values, so the
 // curated data is checked against the real asset rather than a copied list.
@@ -96,6 +97,28 @@ describe("model coverage", () => {
   it("returns at least one exercise for every muscle in the model", () => {
     for (const entry of model) {
       expect(exercisesForMuscle(entry.key, entry.group).length, entry.key).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("exercise clips", () => {
+  it("maps every clip to a real exercise", () => {
+    for (const id of Object.keys(clipSubjects)) {
+      expect(exercises[id], id).toBeDefined();
+    }
+  });
+
+  it("has a file on disk for every mapped clip", () => {
+    for (const id of Object.keys(clipSubjects)) {
+      const clip = clipFor(id);
+      expect(clip, id).not.toBeNull();
+      expect(existsSync(`public${clip!.src}`), clip!.src).toBe(true);
+    }
+  });
+
+  it("names what each clip depicts", () => {
+    for (const [id, depicts] of Object.entries(clipSubjects)) {
+      expect(depicts.length, id).toBeGreaterThan(0);
     }
   });
 });
