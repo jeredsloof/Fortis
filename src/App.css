@@ -1,48 +1,137 @@
 .app {
-  display: flex;
+  position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, #23252e 0%, #101118 62%, #0b0c11 100%);
 }
 
-.app__viewport {
-  flex: 1;
-  min-width: 0;
+.app__rotate-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #3a3d4a;
+  border-radius: 999px;
+  background: rgba(20, 21, 28, 0.75);
+  color: #e8e6ef;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
 }
 
-.muscle-panel {
-  width: 320px;
-  flex-shrink: 0;
-  padding: 1.5rem;
-  overflow-y: auto;
-  background: #161616;
-  color: #f0f0f0;
-  border-left: 1px solid #2a2a2a;
-  text-align: left;
+.app__rotate-toggle:hover {
+  border-color: #5a5e70;
+  background: rgba(32, 34, 44, 0.85);
 }
 
-.muscle-panel--empty {
+.app__hint {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #8e8c99;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* Hover name tag, rendered in 3D space via drei's <Html>. */
+.muscle-tag {
+  display: inline-block;
+  transform: translate(14px, -50%);
+  padding: 0.25rem 0.55rem;
+  border: 1px solid #3a3d4a;
+  border-radius: 6px;
+  background: rgba(14, 15, 20, 0.88);
+  color: #f2f0f7;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.muscle-modal {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
-  color: #888;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(6, 7, 10, 0.6);
+  backdrop-filter: blur(3px);
 }
 
-.muscle-panel h2 {
+.muscle-modal__card {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: 80svh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  border: 1px solid #2c2f3a;
+  border-radius: 12px;
+  background: #16171d;
+  color: #f0f0f0;
+  text-align: left;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 20px 40px -12px;
+}
+
+.muscle-modal__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #8e8c99;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.muscle-modal__close:hover {
+  background: #23252e;
+  color: #f0f0f0;
+}
+
+.muscle-modal__card h2 {
   margin-top: 0;
+  margin-bottom: 0.25rem;
+  padding-right: 2rem;
+  color: #f7f6fa;
 }
 
-.muscle-panel ul {
+.muscle-modal__meta {
+  color: #8e8c99;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  margin-bottom: 1.25rem;
+}
+
+.muscle-modal__card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8e8c99;
+}
+
+.muscle-modal__card ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.muscle-panel li {
+.muscle-modal__card li {
   padding: 0.75rem 0;
-  border-top: 1px solid #2a2a2a;
+  border-top: 1px solid #2c2f3a;
 }
 
-.muscle-panel li p {
+.muscle-modal__card li p {
   margin: 0.25rem 0 0;
-  color: #aaa;
+  color: #a5a3b0;
   font-size: 0.9rem;
 }

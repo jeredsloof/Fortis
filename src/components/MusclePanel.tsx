@@ -1,46 +1,64 @@
+import { useEffect } from "react";
 import { exercises } from "../data/exercises";
-import { muscles } from "../data/muscles";
+import { exercisesByGroup } from "../data/muscleGroups";
+import type { MuscleSelection } from "../types/anatomy";
 
 interface MusclePanelProps {
-  muscleId: string | null;
+  muscle: MuscleSelection | null;
+  onClose: () => void;
 }
 
-export function MusclePanel({ muscleId }: MusclePanelProps) {
-  if (!muscleId) {
-    return (
-      <aside className="muscle-panel muscle-panel--empty">
-        <p>Click a highlighted muscle to see details and exercises.</p>
-      </aside>
-    );
-  }
+export function MusclePanel({ muscle, onClose }: MusclePanelProps) {
+  useEffect(() => {
+    if (!muscle) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [muscle, onClose]);
 
-  const muscle = muscles[muscleId];
-  if (!muscle) {
-    return (
-      <aside className="muscle-panel muscle-panel--empty">
-        <p>No data found for "{muscleId}" yet.</p>
-      </aside>
-    );
-  }
+  if (!muscle) return null;
+
+  const exerciseIds = exercisesByGroup[muscle.group] ?? [];
 
   return (
-    <aside className="muscle-panel">
-      <h2>{muscle.name}</h2>
-      <p>{muscle.description}</p>
+    <div className="muscle-modal" onClick={onClose}>
+      <div
+        className="muscle-modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="muscle-modal-title"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="muscle-modal__close" onClick={onClose} aria-label="Close">
+          ×
+        </button>
 
-      <h3>Exercises</h3>
-      <ul>
-        {muscle.exerciseIds.map((exerciseId) => {
-          const exercise = exercises[exerciseId];
-          if (!exercise) return null;
-          return (
-            <li key={exercise.id}>
-              <strong>{exercise.name}</strong>
-              <p>{exercise.description}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </aside>
+        <h2 id="muscle-modal-title">{muscle.label}</h2>
+        <p className="muscle-modal__meta">
+          {muscle.group}
+          {muscle.side ? ` · ${muscle.side}` : ""}
+        </p>
+
+        <h3>Exercises</h3>
+        {exerciseIds.length === 0 ? (
+          <p>No exercises catalogued for this muscle group yet.</p>
+        ) : (
+          <ul>
+            {exerciseIds.map((exerciseId) => {
+              const exercise = exercises[exerciseId];
+              if (!exercise) return null;
+              return (
+                <li key={exercise.id}>
+                  <strong>{exercise.name}</strong>
+                  <p>{exercise.description}</p>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </div>
   );
 }
