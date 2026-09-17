@@ -1,29 +1,73 @@
 .app {
-  position: relative;
+  display: flex;
   width: 100vw;
   height: 100svh;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, #23252e 0%, #101118 62%, #0b0c11 100%);
+  background: var(--ground);
 }
 
-.app__rotate-toggle {
+.app__viewport {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* A faint pool of light under the specimen, rather than a flat void. */
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, #17292b 0%, var(--ground) 70%);
+}
+
+/* --- Loading --- */
+
+.app__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  color: var(--bone-dim);
+  font-size: var(--step--1);
+}
+
+.app__pulse {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--live);
+  animation: app-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes app-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* --- Viewport chrome --- */
+
+.app__control {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  padding: 0.5rem 0.9rem;
-  border: 1px solid #3a3d4a;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--drape);
   border-radius: 999px;
-  background: rgba(20, 21, 28, 0.75);
-  color: #e8e6ef;
+  background: rgba(14, 26, 28, 0.8);
+  color: var(--bone);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: var(--step--1);
   cursor: pointer;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
-.app__rotate-toggle:hover {
-  border-color: #5a5e70;
-  background: rgba(32, 34, 44, 0.85);
+.app__control:hover {
+  border-color: var(--drape-bright);
+  color: var(--live);
 }
 
 .app__hint {
@@ -31,107 +75,398 @@
   bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
-  color: #8e8c99;
-  font-size: 0.85rem;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  color: var(--bone-dim);
+  font-size: var(--step--1);
   pointer-events: none;
 }
 
-/* Hover name tag, rendered in 3D space via drei's <Html>. */
+/* --- Search --- */
+
+.muscle-search {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: min(264px, calc(100% - 11rem));
+}
+
+.muscle-search__input {
+  width: 100%;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--drape);
+  border-radius: 999px;
+  background: rgba(14, 26, 28, 0.8);
+  color: var(--bone);
+  font: inherit;
+  font-size: var(--step--1);
+  backdrop-filter: blur(8px);
+}
+
+.muscle-search__input::placeholder {
+  color: var(--bone-dim);
+}
+
+.muscle-search__results {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0.25rem;
+  border: 1px solid var(--drape);
+  border-radius: 4px;
+  background: var(--ground-lift);
+  box-shadow: rgba(0, 0, 0, 0.45) 0 14px 30px -12px;
+}
+
+.muscle-search__result {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--bone);
+  font: inherit;
+  font-size: var(--step--1);
+  text-align: left;
+  cursor: pointer;
+}
+
+.muscle-search__result--active {
+  background: var(--drape);
+}
+
+.muscle-search__group {
+  color: var(--bone-dim);
+  font-size: var(--step--1);
+}
+
+.muscle-search__empty {
+  margin: 0.4rem 0 0;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--drape);
+  border-radius: 4px;
+  background: var(--ground-lift);
+  color: var(--bone-dim);
+  font-size: var(--step--1);
+}
+
+/* --- Hover name tag, rendered in 3D space via drei's <Html> --- */
+
 .muscle-tag {
   display: inline-block;
   transform: translate(14px, -50%);
-  padding: 0.25rem 0.55rem;
-  border: 1px solid #3a3d4a;
-  border-radius: 6px;
-  background: rgba(14, 15, 20, 0.88);
-  color: #f2f0f7;
-  font-size: 0.78rem;
-  line-height: 1.2;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--drape-bright);
+  border-radius: 2px;
+  background: rgba(14, 26, 28, 0.9);
+  color: var(--bone);
+  font-family: var(--serif);
+  font-size: var(--step--1);
+  line-height: 1.45;
   white-space: nowrap;
   user-select: none;
 }
 
-.muscle-modal {
+/* --- Tier 1: the anchored callout --- */
+
+.callout-layer {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: rgba(6, 7, 10, 0.6);
-  backdrop-filter: blur(3px);
+  pointer-events: none;
 }
 
-.muscle-modal__card {
-  position: relative;
-  width: min(420px, 100%);
-  max-height: 80svh;
-  overflow-y: auto;
-  padding: 1.5rem;
-  border: 1px solid #2c2f3a;
-  border-radius: 12px;
-  background: #16171d;
-  color: #f0f0f0;
-  text-align: left;
-  box-shadow: rgba(0, 0, 0, 0.5) 0 20px 40px -12px;
-}
-
-.muscle-modal__close {
+.callout-leader {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 2rem;
-  height: 2rem;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.callout-leader__origin {
+  fill: var(--live);
+}
+
+.callout-leader__line {
+  fill: none;
+  stroke: var(--live);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: callout-draw 200ms ease-out;
+}
+
+@keyframes callout-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+.callout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 252px;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--drape-bright);
+  border-radius: 4px;
+  background: var(--ground-lift);
+  box-shadow: rgba(0, 0, 0, 0.5) 0 16px 34px -14px;
+  pointer-events: auto;
+}
+
+.callout__close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: none;
-  border-radius: 50%;
+  border-radius: 2px;
   background: transparent;
-  color: #8e8c99;
-  font-size: 1.35rem;
+  color: var(--bone-dim);
+  font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
 }
 
-.muscle-modal__close:hover {
-  background: #23252e;
-  color: #f0f0f0;
+.callout__close:hover {
+  color: var(--bone);
 }
 
-.muscle-modal__card h2 {
-  margin-top: 0;
-  margin-bottom: 0.25rem;
-  padding-right: 2rem;
-  color: #f7f6fa;
+.callout__name {
+  margin: 0;
+  padding-right: 1.25rem;
+  font-size: var(--step-2);
+  line-height: 1.15;
 }
 
-.muscle-modal__meta {
-  color: #8e8c99;
-  font-size: 0.85rem;
-  text-transform: capitalize;
-  margin-bottom: 1.25rem;
+.callout__latin {
+  margin-top: 0.1rem;
+  color: var(--bone-dim);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--step--1);
+  line-height: 1.35;
 }
 
-.muscle-modal__card h3 {
-  margin: 0 0 0.25rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8e8c99;
+.callout__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.75rem;
+  margin: 0.75rem 0 0;
+  font-size: var(--step--1);
 }
 
-.muscle-modal__card ul {
+.callout__facts dt {
+  color: var(--bone-dim);
+}
+
+.callout__facts dd {
+  margin: 0;
+  color: var(--bone);
+}
+
+.callout__exercises {
   list-style: none;
-  padding: 0;
+  margin: 0.8rem 0 0;
+  padding: 0.7rem 0 0;
+  border-top: 1px solid var(--drape);
+  font-size: var(--step-0);
+}
+
+.callout__exercises li {
+  padding: 0.12rem 0;
+}
+
+.callout__more {
+  color: var(--bone-dim);
+  font-size: var(--step--1);
+}
+
+.callout__action {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--live);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--live);
+  font: inherit;
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+
+.callout__action:hover {
+  background: var(--live);
+  color: var(--ground);
+}
+
+/* --- Tier 2: the docked detail panel --- */
+
+.detail {
+  flex: 0 0 auto;
+  width: 366px;
+  padding: 1.5rem 1.4rem 2rem;
+  overflow-y: auto;
+  border-left: 1px solid var(--drape);
+  background: var(--ground-lift);
+}
+
+.detail:focus {
+  outline: none;
+}
+
+.detail__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.detail__name {
+  margin: 0;
+  font-size: var(--step-3);
+  line-height: 1.1;
+}
+
+.detail__latin {
+  margin-top: 0.15rem;
+  color: var(--bone-dim);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--step-0);
+}
+
+.detail__close {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bone-dim);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.detail__close:hover {
+  border-color: var(--drape-bright);
+  color: var(--bone);
+}
+
+.detail__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 1rem;
+  margin: 1.1rem 0 0;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--drape);
+  font-size: var(--step--1);
+}
+
+.detail__facts dt {
+  color: var(--bone-dim);
+}
+
+.detail__facts dd {
   margin: 0;
 }
 
-.muscle-modal__card li {
-  padding: 0.75rem 0;
-  border-top: 1px solid #2c2f3a;
+.detail__empty {
+  margin-top: 1.1rem;
+  color: var(--bone-dim);
 }
 
-.muscle-modal__card li p {
-  margin: 0.25rem 0 0;
-  color: #a5a3b0;
-  font-size: 0.9rem;
+.detail__exercises {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.detail__exercises li {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--drape);
+}
+
+.detail__exercise-name {
+  margin: 0;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+
+.detail__description {
+  margin-top: 0.35rem;
+  max-width: 62ch;
+  color: var(--bone);
+  font-size: var(--step-0);
+}
+
+.detail__cue {
+  margin-top: 0.45rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--live);
+  color: var(--bone-dim);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: var(--step-0);
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .callout-leader__line {
+    animation: none;
+  }
+
+  .app__pulse {
+    animation-duration: 4s;
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .muscle-search {
+    width: calc(100% - 2rem);
+  }
+
+  .app__control {
+    top: auto;
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .app__hint {
+    left: 1rem;
+    bottom: 4rem;
+    transform: none;
+  }
+
+  /* No room to float beside the body — the callout docks to the bottom edge
+     and the leader line is dropped, since it has nothing to point across. */
+  .callout-leader {
+    display: none;
+  }
+
+  .callout {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-width: 1px 0 0;
+    border-radius: 0;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .detail {
+    width: 100%;
+    max-height: 62svh;
+    border-left: none;
+    border-top: 1px solid var(--drape);
+  }
 }

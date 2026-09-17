@@ -1,34 +1,66 @@
-# React + TypeScript + Vite
+# Fortis
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+An interactive 3D map of human muscular anatomy, in the browser. Hover a muscle to
+name it, click it to see the exercises that train it.
 
-Currently, two official plugins are available:
+## What it does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Explore** a full anatomical model — 218 individually selectable muscle regions.
+- **Hover** any muscle to highlight it and read its name on a floating tag.
+- **Click** to open its details: name, training group, side, and a curated list of
+  strength exercises, each with a form cue.
+- **Search** by muscle or group name when you would rather not hunt for it.
+- **Auto-rotate** the model, with a toggle to pause it and full orbit/zoom/pan
+  controls via mouse or touch.
 
-## React Compiler
+Exercise lists are curated per muscle where the distinction matters — a wrist curl
+is offered for the forearm flexors, a reverse wrist curl for the extensors, and
+forearm pronation for the pronators, rather than one list shared across all 24
+forearm muscles. All 109 distinct muscles have their own list; the broader
+per-training-group lists remain as a fallback.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Running it
 
-## Expanding the Oxlint configuration
+Requires Node 20+.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+| Script | Does |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check and build for production |
+| `npm test` | Run the data-integrity test suite |
+| `npm run lint` | Run oxlint |
+| `npm run preview` | Serve the production build locally |
 
-Human anatomy project
+## How it is built
+
+React + TypeScript on Vite, with [react-three-fiber](https://github.com/pmndrs/react-three-fiber)
+and [drei](https://github.com/pmndrs/drei) rendering the model through Three.js.
+
+There is no backend and no database. Muscle names, groups and sides are read
+straight off the model's glTF `extras` at runtime, so there is no id-to-label table
+to keep in sync with the asset. Exercise content is static data in `src/data/`, keyed
+by the same values the model carries; `src/data/exerciseData.test.ts` parses the GLB
+directly and fails if the curation and the model ever drift apart.
+
+The 3D scene is lazy-loaded, keeping Three.js and drei out of the entry chunk so the
+page can paint before the model arrives.
+
+## The anatomy model
+
+`public/models/full-body-male-mobile.glb` comes from
+[slfresh/fitmitwith-anatomy-atlas](https://github.com/slfresh/fitmitwith-anatomy-atlas),
+adapted from [Z-Anatomy](https://www.z-anatomy.com/) / BodyParts3D and licensed
+**CC BY-SA 4.0**. Full provenance, attribution and license texts are in
+[`docs/anatomy-model/`](docs/anatomy-model/) — if you reuse the model, those terms
+come with it.
+
+## Note
+
+Fortis is an anatomy reference and training aid, not medical advice. The exercise
+suggestions describe which muscles a movement loads; they are not a prescription,
+and nothing here accounts for your injury history or individual circumstances.
